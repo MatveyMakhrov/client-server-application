@@ -13,7 +13,6 @@
 
 std::atomic<bool> isRunning(true);
 
-// Обработчик сигналов для корректного завершения
 void setupSignalHandlers() {
     #ifdef _WIN32
     SetConsoleCtrlHandler([](DWORD type) {
@@ -28,7 +27,6 @@ void setupSignalHandlers() {
     #endif
 }
 
-// Функция для запуска сервера отображения с автоматическим перезапуском
 void runDisplayServer(int port) {
     while (isRunning) {
         try {
@@ -44,7 +42,6 @@ void runDisplayServer(int port) {
     }
 }
 
-// Функция для запуска сервера обработки с автоматическим перезапуском
 void runProcessingServer(int port, const std::string& displayHost, int displayPort) {
     while (isRunning) {
         try {
@@ -62,7 +59,6 @@ void runProcessingServer(int port, const std::string& displayHost, int displayPo
     }
 }
 
-// Функция для запуска клиента
 void runClient(const std::string& host, int port) {
     try {
         Client client(host, port);
@@ -117,22 +113,17 @@ int main(int argc, char* argv[]) {
             int processingPort = std::stoi(argv[3]);
             int displayPort = std::stoi(argv[4]);
 
-            // Запуск сервера отображения в отдельном потоке
             std::thread displayThread(runDisplayServer, displayPort);
             displayThread.detach();
 
-            // Ожидание запуска сервера отображения
             std::this_thread::sleep_for(std::chrono::seconds(3));
 
-            // Запуск сервера обработки в отдельном потоке
             std::thread processingThread(runProcessingServer,
                 processingPort, "127.0.0.1", displayPort);
             processingThread.detach();
 
-            // Ожидание запуска сервера обработки
             std::this_thread::sleep_for(std::chrono::seconds(3));
 
-            // Запуск клиента в основном потоке
             runClient("127.0.0.1", processingPort);
         }
         else {

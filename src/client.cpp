@@ -105,7 +105,6 @@ void Client::disconnect() {
 }
 
 bool Client::sendData(const std::string& data) {
-    std::cout << "[DEBUG] Attempting to send data: " << data << std::endl;
     for (int attempt = 0; attempt < 3; attempt++) {
         if (clientSocket == -1 && !connectToServer()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));

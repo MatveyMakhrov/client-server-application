@@ -12,7 +12,6 @@ const std::string TEST_HOST = "127.0.0.1";
 class ServerTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        // Запуск тестовых серверов
         display_server_thread = std::thread([] {
             DisplayServer server(TEST_DISPLAY_PORT);
             server.start();
@@ -23,12 +22,10 @@ protected:
             server.start();
             });
 
-        // Даем серверам время на запуск
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     void TearDown() override {
-        // Остановка серверов
         system("taskkill /F /IM tests.exe");
         display_server_thread.join();
         processing_server_thread.join();

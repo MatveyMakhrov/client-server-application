@@ -106,13 +106,11 @@ void ProcessingServer::stop() {
 }
 
 bool ProcessingServer::handleClient(int clientSocket) {
-	std::cout << "[DEBUG] Handling new client connection" << std::endl;
-	while (isRunning) {  // Добавляем цикл для обработки нескольких сообщений
+	while (isRunning) {
 		try {
 			const int BUFFER_SIZE = 4096;
 			char buffer[BUFFER_SIZE];
 
-			// Получаем длину данных
 			uint32_t dataLength;
 			int bytesReceived = receiveTCPData(clientSocket,
 				reinterpret_cast<char*>(&dataLength), sizeof(dataLength));
@@ -125,14 +123,12 @@ bool ProcessingServer::handleClient(int clientSocket) {
 				continue;
 			}
 
-			// Получаем данные
 			bytesReceived = receiveTCPData(clientSocket, buffer, dataLength);
 			if (bytesReceived <= 0) break;
 
 			buffer[bytesReceived] = '\0';
 			std::string processedData = processData(buffer);
 
-			// Отправка с повторными попытками
 			for (int i = 0; i < 3; i++) {
 				if (sendToDisplayServer(processedData) &&
 					sendAcknowledgement(clientSocket)) {
