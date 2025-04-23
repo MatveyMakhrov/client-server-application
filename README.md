@@ -32,7 +32,8 @@
 
 ### Инструкции по сборке
 ```bash
-mkdir build && cd build
+mkdir build
+cd build
 cmake ..
 cmake --build . --config Release
 ```
